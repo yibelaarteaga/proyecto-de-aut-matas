@@ -1,8 +1,9 @@
 package programa_lenguaje;
+
 import java.util.*;
 
 public class DerivarCadenasCFG {
-	// Clase para representar una gramática independiente de contexto (CFG)
+    // Clase para representar una gramática independiente de contexto (CFG)
     static class ContextFreeGrammar {
         private Map<String, List<String>> productions = new HashMap<>();
 
@@ -70,7 +71,7 @@ public class DerivarCadenasCFG {
         Scanner scanner = new Scanner(System.in);
         ContextFreeGrammar cfg = new ContextFreeGrammar();
         String input;
-        String continueOption;
+        String continueOption = "sí"; // Inicializamos con "sí" para entrar en el ciclo
         int maxSteps = 5; // Número máximo de derivaciones para generar el lenguaje
 
         // Añadimos algunas producciones iniciales
@@ -78,7 +79,7 @@ public class DerivarCadenasCFG {
         cfg.addProduction("S", "");
 
         // Bucle para permitir entradas continuas
-        do {
+        while (continueOption.equalsIgnoreCase("sí") || continueOption.equalsIgnoreCase("s")) {
             System.out.println("Introduce una opción: \n1. Derivar cadenas \n2. Verificar si una cadena es derivable \n3. Añadir nuevas reglas de producción");
             String option = scanner.nextLine();
 
@@ -88,10 +89,15 @@ public class DerivarCadenasCFG {
                     String startSymbol = scanner.nextLine();
                     if (startSymbol.isEmpty()) startSymbol = "S";
                     System.out.println("¿Cuántos pasos máximos para generar el lenguaje?");
-                    maxSteps = scanner.nextInt();
-                    scanner.nextLine(); // Limpiar buffer
-                    System.out.println("Generando cadenas derivadas desde el símbolo '" + startSymbol + "' en " + maxSteps + " pasos:");
-                    cfg.generateLanguage(startSymbol, maxSteps);
+                    if (scanner.hasNextInt()) {
+                        maxSteps = scanner.nextInt();
+                        scanner.nextLine(); // Limpiar buffer
+                        System.out.println("Generando cadenas derivadas desde el símbolo '" + startSymbol + "' en " + maxSteps + " pasos:");
+                        cfg.generateLanguage(startSymbol, maxSteps);
+                    } else {
+                        System.out.println("Entrada no válida. Se utilizarán los pasos máximos por defecto: 5.");
+                        scanner.nextLine(); // Limpiar buffer por si hay caracteres no numéricos
+                    }
                     break;
 
                 case "2":
@@ -118,15 +124,12 @@ public class DerivarCadenasCFG {
                     break;
             }
 
-            // Preguntamos si el usuario desea continuar
+            // Preguntar si el usuario desea ingresar otra opción
             System.out.println("¿Deseas ingresar otra opción? (sí/no):");
-            continueOption = scanner.nextLine();
-
-        } while (continueOption.equalsIgnoreCase("sí") || continueOption.equalsIgnoreCase("s"));
+            continueOption = scanner.nextLine().trim(); // Usamos .trim() para eliminar espacios adicionales
+        }
 
         System.out.println("Fin del programa.");
         scanner.close();
     }
-
-
 }
